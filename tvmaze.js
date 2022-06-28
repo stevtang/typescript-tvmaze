@@ -10941,6 +10941,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 var $showsList = $("#showsList");
 var $episodesArea = $("#episodesArea");
+var $episdoesButton = $("#Show-getEpisodes");
 var $searchForm = $("#searchForm");
 var BASE_URL = 'https://api.tvmaze.com/search/shows';
 function getShowsByTerm(term) {
@@ -10956,7 +10957,7 @@ function getShowsByTerm(term) {
                         id: Number(show.show.id),
                         name: show.show.name.toString(),
                         summary: show.show.summary.toString(),
-                        image: show.show.image.toString()
+                        image: show.show.image !== null ? show.show.image.medium.toString() : 'https://tinyurl.com/tv-missing'
                     }); });
                     return [2 /*return*/, returnVal];
             }
@@ -10968,7 +10969,8 @@ function populateShows(shows) {
     $showsList.empty();
     for (var _i = 0, shows_1 = shows; _i < shows_1.length; _i++) {
         var show = shows_1[_i];
-        var $show = $("<div data-show-id=\"".concat(show.id, "\" class=\"Show col-md-12 col-lg-6 mb-4\">\n         <div class=\"media\">\n           <img\n              src=\"http://static.tvmaze.com/uploads/images/medium_portrait/160/401704.jpg\"\n              alt=\"Bletchly Circle San Francisco\"\n              class=\"w-25 me-3\">\n           <div class=\"media-body\">\n             <h5 class=\"text-primary\">").concat(show.name, "</h5>\n             <div><small>").concat(show.summary, "</small></div>\n             <button class=\"btn btn-outline-light btn-sm Show-getEpisodes\">\n               Episodes\n             </button>\n           </div>\n         </div>\n       </div>\n      "));
+        console.log("show image", show.image);
+        var $show = $("<div data-show-id=\"".concat(show.id, "\" class=\"Show col-md-12 col-lg-6 mb-4\">\n         <div class=\"media\">\n           <img\n              src=").concat(show.image, "\n              alt=\"Bletchly Circle San Francisco\"\n              class=\"w-25 me-3\">\n           <div class=\"media-body\">\n             <h5 class=\"text-primary\">").concat(show.name, "</h5>\n             <div><small>").concat(show.summary, "</small></div>\n             <button class=\"btn btn-outline-light btn-sm Show-getEpisodes\">\n               Episodes\n             </button>\n           </div>\n         </div>\n       </div>\n      "));
         $showsList.append($show);
     }
 }
@@ -10987,6 +10989,7 @@ function searchForShowAndDisplay() {
                 case 1:
                     shows = _a.sent();
                     $episodesArea.hide();
+                    populateShows(shows);
                     return [2 /*return*/];
             }
         });
@@ -11006,10 +11009,34 @@ $searchForm.on("submit", function (evt) {
         });
     });
 });
+$showsList.on("click", $("#Show-getEpisodes"), function (evt) {
+    return __awaiter(this, void 0, void 0, function () {
+        var showId;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    evt.preventDefault();
+                    console.log("evt target", evt.target);
+                    showId = evt.target.closest('.Show').getAttribute('data-show-id');
+                    console.log("show id", showId);
+                    return [4 /*yield*/, getEpisodesOfShow(+showId)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+});
 /** Given a show ID, get from API and return (promise) array of episodes:
  *      { id, name, season, number }
  */
-// async function getEpisodesOfShow(id) { }
+function getEpisodesOfShow(id) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/];
+        });
+    });
+}
 /** Write a clear docstring for this function... */
 // function populateEpisodes(episodes) { }
 

@@ -3,6 +3,7 @@ import * as $ from 'jquery';
 
 const $showsList = $("#showsList");
 const $episodesArea = $("#episodesArea");
+const $episdoesButton = $("#Show-getEpisodes");
 const $searchForm = $("#searchForm");
 const BASE_URL = 'https://api.tvmaze.com/search/shows';
 
@@ -29,7 +30,7 @@ async function getShowsByTerm(term: string): Promise<ShowInterface[]> {
     id: Number(show.show.id),
     name: show.show.name.toString(),
     summary: show.show.summary.toString(),
-    image: show.show.image.toString()
+    image: show.show.image !== null ? show.show.image.medium.toString() : 'https://tinyurl.com/tv-missing'
   }));
 
   return returnVal;
@@ -38,15 +39,15 @@ async function getShowsByTerm(term: string): Promise<ShowInterface[]> {
 
 /** Given list of shows, create markup for each and to DOM */
 
-function populateShows(shows) {
+function populateShows(shows: ShowInterface[]): void {
   $showsList.empty();
-
   for (let show of shows) {
+  console.log("show image", show.image);
     const $show = $(
         `<div data-show-id="${show.id}" class="Show col-md-12 col-lg-6 mb-4">
          <div class="media">
            <img
-              src="http://static.tvmaze.com/uploads/images/medium_portrait/160/401704.jpg"
+              src=${show.image}
               alt="Bletchly Circle San Francisco"
               class="w-25 me-3">
            <div class="media-body">
@@ -74,7 +75,7 @@ async function searchForShowAndDisplay() {
   const shows = await getShowsByTerm(term);
 
   $episodesArea.hide();
-//   populateShows(shows);
+  populateShows(shows);
 }
 
 $searchForm.on("submit", async function (evt) {
@@ -82,12 +83,22 @@ $searchForm.on("submit", async function (evt) {
   await searchForShowAndDisplay();
 });
 
+$showsList.on("click", $("#Show-getEpisodes"), async function(evt){
+  evt.preventDefault();
+  console.log("evt target", evt.target);
+  const showId = evt.target.closest('.Show').getAttribute('data-show-id');
+  console.log("show id", showId);
+
+  await getEpisodesOfShow(+showId);
+})
 
 /** Given a show ID, get from API and return (promise) array of episodes:
  *      { id, name, season, number }
  */
 
-// async function getEpisodesOfShow(id) { }
+async function getEpisodesOfShow(id: number) {
+
+ }
 
 /** Write a clear docstring for this function... */
 

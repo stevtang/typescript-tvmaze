@@ -4,7 +4,7 @@ import * as $ from 'jquery';
 const $showsList = $("#showsList");
 const $episodesArea = $("#episodesArea");
 const $searchForm = $("#searchForm");
-
+const BASE_URL = 'https://api.tvmaze.com/search/shows';
 
 /** Given a search term, search for tv shows that match that query.
  *
@@ -12,9 +12,19 @@ const $searchForm = $("#searchForm");
  *    Each show object should contain exactly: {id, name, summary, image}
  *    (if no image URL given by API, put in a default image URL)
  */
+interface showInterface{
+  id: number;
+  name: string;
+  summary: string;
+  image: string;
+}
 
-async function getShowsByTerm(term) {
+async function getShowsByTerm(term: string): Promise<showInterface[]> {
   // ADD: Remove placeholder & make request to TVMaze search shows API.
+  const showsResponse = await fetch(`${BASE_URL}?q=${term}`).then(resp => resp.json());
+
+  console.log("this is the show response", showsResponse);
+
   return [
     {
       id: 1767,
@@ -70,6 +80,7 @@ function populateShows(shows) {
 
 async function searchForShowAndDisplay() {
   const term = $("#searchForm-term").val();
+  console.log('typeof term', typeof(term));
   const shows = await getShowsByTerm(term);
 
   $episodesArea.hide();

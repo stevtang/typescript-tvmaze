@@ -10945,21 +10945,20 @@ var $searchForm = $("#searchForm");
 var BASE_URL = 'https://api.tvmaze.com/search/shows';
 function getShowsByTerm(term) {
     return __awaiter(this, void 0, void 0, function () {
-        var showsResponse;
+        var showsResponse, returnVal;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, fetch("".concat(BASE_URL, "?q=").concat(term)).then(function (resp) { return resp.json(); })];
                 case 1:
                     showsResponse = _a.sent();
                     console.log("this is the show response", showsResponse);
-                    return [2 /*return*/, [
-                            {
-                                id: 1767,
-                                name: "The Bletchley Circle",
-                                summary: "<p><b>The Bletchley Circle</b> follows the journey of four ordinary\n           women with extraordinary skills that helped to end World War II.</p>\n         <p>Set in 1952, Susan, Millie, Lucy and Jean have returned to their\n           normal lives, modestly setting aside the part they played in\n           producing crucial intelligence, which helped the Allies to victory\n           and shortened the war. When Susan discovers a hidden code behind an\n           unsolved murder she is met by skepticism from the police. She\n           quickly realises she can only begin to crack the murders and bring\n           the culprit to justice with her former friends.</p>",
-                                image: "http://static.tvmaze.com/uploads/images/medium_portrait/147/369403.jpg"
-                            }
-                        ]];
+                    returnVal = showsResponse.map(function (show) { return ({
+                        id: Number(show.show.id),
+                        name: show.show.name.toString(),
+                        summary: show.show.summary.toString(),
+                        image: show.show.image.toString()
+                    }); });
+                    return [2 /*return*/, returnVal];
             }
         });
     });
@@ -10982,13 +10981,12 @@ function searchForShowAndDisplay() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    term = $("#searchForm-term").val();
+                    term = $("#searchForm-term").val().toString();
                     console.log('typeof term', typeof (term));
                     return [4 /*yield*/, getShowsByTerm(term)];
                 case 1:
                     shows = _a.sent();
                     $episodesArea.hide();
-                    populateShows(shows);
                     return [2 /*return*/];
             }
         });

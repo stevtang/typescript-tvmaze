@@ -12,38 +12,28 @@ const BASE_URL = 'https://api.tvmaze.com/search/shows';
  *    Each show object should contain exactly: {id, name, summary, image}
  *    (if no image URL given by API, put in a default image URL)
  */
-interface showInterface{
+interface ShowInterface{
   id: number;
   name: string;
   summary: string;
   image: string;
 }
 
-async function getShowsByTerm(term: string): Promise<showInterface[]> {
+async function getShowsByTerm(term: string): Promise<ShowInterface[]> {
   // ADD: Remove placeholder & make request to TVMaze search shows API.
   const showsResponse = await fetch(`${BASE_URL}?q=${term}`).then(resp => resp.json());
 
   console.log("this is the show response", showsResponse);
 
-  return [
-    {
-      id: 1767,
-      name: "The Bletchley Circle",
-      summary:
-        `<p><b>The Bletchley Circle</b> follows the journey of four ordinary
-           women with extraordinary skills that helped to end World War II.</p>
-         <p>Set in 1952, Susan, Millie, Lucy and Jean have returned to their
-           normal lives, modestly setting aside the part they played in
-           producing crucial intelligence, which helped the Allies to victory
-           and shortened the war. When Susan discovers a hidden code behind an
-           unsolved murder she is met by skepticism from the police. She
-           quickly realises she can only begin to crack the murders and bring
-           the culprit to justice with her former friends.</p>`,
-      image:
-          "http://static.tvmaze.com/uploads/images/medium_portrait/147/369403.jpg"
-    }
-  ]
-}
+  const returnVal = showsResponse.map((show) => ({
+    id: Number(show.show.id),
+    name: show.show.name.toString(),
+    summary: show.show.summary.toString(),
+    image: show.show.image.toString()
+  }));
+
+  return returnVal;
+  }
 
 
 /** Given list of shows, create markup for each and to DOM */
@@ -79,12 +69,12 @@ function populateShows(shows) {
  */
 
 async function searchForShowAndDisplay() {
-  const term = $("#searchForm-term").val();
+  const term = $("#searchForm-term").val().toString();
   console.log('typeof term', typeof(term));
   const shows = await getShowsByTerm(term);
 
   $episodesArea.hide();
-  populateShows(shows);
+//   populateShows(shows);
 }
 
 $searchForm.on("submit", async function (evt) {
